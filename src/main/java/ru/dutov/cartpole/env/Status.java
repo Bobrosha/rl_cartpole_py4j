@@ -1,6 +1,17 @@
 package ru.dutov.cartpole.env;
 
+/**
+ * Класс для удобной реализации выходных данных из окружения CartPole
+ */
 public class Status {
+    /**
+    * @param x переменная в окружении описывающая положение (координату) тележки на прямой
+    * @param xDot вспомогательная переменная, используется при расчетах координаты
+    * @param theta переменная в окружении описывающая угол отклонения маятника от нормали
+    * @param thetaDot вспомогательная переменная, используется при расчетах угла отклонения
+    * @param reward переменная передающая награду за каждое совершенное агентом действие
+    * @param done переменная означающая окончание игры (true - окончена false - продолжается)
+    */
     private double x;
     private double xDot;
     private double theta;
@@ -30,6 +41,9 @@ public class Status {
         return done;
     }
 
+    /**
+     * Конструктор для инициализации
+     */
     public Status(double x, double xDot, double theta, double thetaDot, float reward, boolean done) {
         this.x = x;
         this.xDot = xDot;
@@ -39,6 +53,9 @@ public class Status {
         this.done = done;
     }
 
+    /**
+     * Метод для установки начальных параметров тележки
+     */
     public void reset() {
         double min = -0.05;
         double max = 0.05;
@@ -50,14 +67,6 @@ public class Status {
         this.reward = 0;
         this.done = false;
     }
-
-    /*public void print() {
-        System.out.format("%n" + "%f; %f; %f; %f" + "%n", this.x, this.xDot, this.theta, this.thetaDot);
-        System.out.print("Reward: ");
-        System.out.println(this.reward);
-        System.out.print("Done: ");
-        System.out.println(this.done);
-    }*/ // Use only for tests
 }
 
 

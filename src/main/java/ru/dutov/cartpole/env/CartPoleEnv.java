@@ -2,7 +2,15 @@ package ru.dutov.cartpole.env;
 
 import py4j.GatewayServer;
 
+/**
+ * Класс реализующий окружение (тележку)
+ *
+ * Все параметры в этом классе используются только внутри для расчетов положения тележки
+ */
 public class CartPoleEnv {
+    /**
+     * @param state единственная переменная, которая возвращается и передает статус тележки
+     */
     private double pi;
 
     private double gravity;
@@ -31,6 +39,9 @@ public class CartPoleEnv {
 
     private GatewayServer server = new GatewayServer();
 
+    /**
+     * Метод запускающий сервер для связи с Python
+     */
     public void Start() {
         server.start(true);
     }
@@ -55,6 +66,11 @@ public class CartPoleEnv {
         this.observationSpace = 4;
     }
 
+    /**
+     * Метод обновляющий состояние тележки
+     * @param action совершенное действие
+     * @return обновленное состояние
+     */
     public Status step(int action) {
         double x = this.state.getX();
         double xDot = this.state.getXDot();
@@ -86,6 +102,10 @@ public class CartPoleEnv {
         return this.state;
     }
 
+    /**
+     * Метод сбрасывающий состояние тележки к начальному
+     * @return Возвращает состояние тележки
+     */
     public Status reset() {
         this.state.reset();
         return this.state;
