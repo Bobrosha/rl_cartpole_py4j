@@ -11,25 +11,24 @@ from py4j.java_gateway import JavaGateway
 class Agent():
     # Инициализация
     def __init__(self, observ_space, action_space):
-        self.state_size = observ_space # Количество параметров входящих в нейронную сеть
+        self.observ_size = observ_space # Количество параметров входящих в нейронную сеть
         self.action_size = action_space # Количество вариантов действий агента
         self.memory = deque(maxlen = 2000) # Хранилище совершенных агентом действий и их последствий
         self.gamma = 0.95 # Фактор дисконтирования. Коэффициент уменьшения вознаграждения
         
-        self.freeroll_rate = 0.9 # Процент рандомных действий агента
-        self.freeroll_min = 1e-3 # Минимальный процент
+        self.freeroll_rate = 1.0 # Процент рандомных действий агента
+        self.freeroll_min = 0.01 # Минимальный процент
         self.freeroll_decay = 0.995 # Уменьшение рандомных решений после каждого обучения
-        self.learning_rate = 1e-4 # Изменение скорости обучения оптимизатора с течением времени
+        self.learning_rate = 0.001 # Изменение скорости обучения оптимизатора с течением времени
         self.model = self.build_model() # Модель
     
     # Создание скомпилированной модели
     def build_model(self):
         model = Sequential()
         
-        model.add(Dense(24, activation='relu', 
-                        input_dim=observ_space))
+        model.add(Dense(24, activation='relu', input_dim=self.observ_size))
         model.add(Dense(24, activation='relu'))
-        model.add(Dense(action_space, activation='linear'))
+        model.add(Dense(self.action_size, activation='linear'))
         model.compile(loss='mse', 
                       optimizer=Adam(lr = self.learning_rate))
         return model
@@ -72,17 +71,16 @@ if __name__ == "__main__":
     def get_state(java_state):
         done = java_state.isDone()
         reward = java_state.getReward()
-        state = np.array([java_state.getX(), java_state.getXDot(), java_state.getTheta(), java_state.getThetaDot()], dtype = np.float64)
-        state = np.reshape(state, (1, 4))
+        state = np.array([[java_state.getX(), java_state.getXDot(), java_state.getTheta(), java_state.getThetaDot()]], dtype = np.float64)
         return state, done, reward
-        
+    
+    # DQN - глубокая Q-нейронная сеть
     java_gateway = JavaGateway()
     env = java_gateway.jvm.ru.dutov.cartpole.env.CartPoleEnv()
     
     observ_space = env.getObservationSpace()
     action_space = env.getActionSpace()
     
-    # DQN - глубокая Q-нейронная сеть
     agent = Agent(observ_space, action_space) # Создаем агента
     
     episodes = 500 # Число игровых эпизодов
@@ -90,7 +88,10 @@ if __name__ == "__main__":
     scores = deque(maxlen = 100)
     # scores - хранит длительность последних 100 игр
 
+    #
     # Цикл игры и обучения
+    #
+
     for e in range(episodes + 1):
         # Получаем начальное состояние объекта перед началом каждого эпизода
         state, done, reward = get_state(env.reset())        
