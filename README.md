@@ -2,7 +2,7 @@
 
 Обучение нейронной сети tensorflow keras на модели cartpole джава, с использованием фреймворка py4j.
 
-Программа на java https://github.com/Bobrosha/rl_cartpole_py4j/tree/master/src/main/java/ru/dutov/cartpole
+java модель https://github.com/Bobrosha/rl_cartpole_py4j/tree/master/src/main/java/ru/dutov/cartpole
 Реализует модель cartpole и запускает шлюз, для доступа нейронной сети к модели.
 
 Программа на Python "agent_client.py".
